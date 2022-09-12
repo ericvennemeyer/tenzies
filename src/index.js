@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const app = (
-  <div className="app-container">
-    <h1>Sample Title</h1>
-    <p>Sample Text</p>
-  </div>
+  <App />
 )
 
 root.render(app);
