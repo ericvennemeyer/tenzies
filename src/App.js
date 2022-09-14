@@ -2,10 +2,24 @@ import React from "react";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
 import Die from "./Die";
+import Scoreboard from "./Scoreboard";
 
 export default function App() {
+    
+    let bestScore;
+    if (localStorage.getItem("bestScore")) {
+        bestScore = localStorage.getItem("bestScore");
+    } else {
+        bestScore = 0;
+    }
 
     const [allDice, setAllDice] = React.useState(createDice());
+    const [scoreboard, setScoreboard] = React.useState(
+        {
+            currRolls: 0,
+            bestRolls: bestScore
+        }
+    )
     const [tenzies, setTenzies] = React.useState(false);
     const [roll, setRoll] = React.useState(false);
     
@@ -17,8 +31,10 @@ export default function App() {
        
         if (allHeld && allSameNumber) {
             setTenzies(true);
-            console.log("You Won!");
         }
+
+        localStorage.setItem("bestScore", scoreboard.bestRolls);
+
     }, allDice);
 
     function createDice() {
@@ -48,9 +64,27 @@ export default function App() {
                 }
             }))
 
+            setScoreboard(prevScoreboard => {
+                return {...prevScoreboard, currRolls: prevScoreboard.currRolls + 1}
+            })
+
             setRoll(true);
 
         } else {
+            setScoreboard(prevScoreboard => {
+                let tempRolls;
+                if (prevScoreboard.bestRolls === 0 || prevScoreboard.currRolls < prevScoreboard.bestRolls) {
+                    tempRolls = prevScoreboard.currRolls;
+                } else {
+                    tempRolls = prevScoreboard.bestRolls;
+                }
+
+                return {
+                    currRolls: 0,
+                    bestRolls: tempRolls
+                }
+            })
+            
             setAllDice(createDice());
             setTenzies(false);
         }   
@@ -79,6 +113,7 @@ export default function App() {
             {tenzies && <Confetti />}
             <h1>Tenzies</h1>
             <p className="instructions">Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
+            <Scoreboard currRolls={scoreboard.currRolls} bestRolls={scoreboard.bestRolls} />
             <div className="dice-container">
                 {diceElements}
             </div>
