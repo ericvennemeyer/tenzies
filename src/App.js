@@ -7,6 +7,7 @@ export default function App() {
 
     const [allDice, setAllDice] = React.useState(createDice());
     const [tenzies, setTenzies] = React.useState(false);
+    const [roll, setRoll] = React.useState(false);
     
     React.useEffect(() => {
         const matchNumber = allDice[0].number;
@@ -46,6 +47,9 @@ export default function App() {
                     return randomDie();
                 }
             }))
+
+            setRoll(true);
+
         } else {
             setAllDice(createDice());
             setTenzies(false);
@@ -65,6 +69,7 @@ export default function App() {
                 number={die.number} 
                 isHeld={die.isHeld} 
                 id={die.id} 
+                roll={roll}
                 handleClick={() => holdDie(die.id)} />
         )
     })
